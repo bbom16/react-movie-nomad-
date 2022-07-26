@@ -19,7 +19,7 @@ function App() {
   }, [keyword]); //keyword가 변화할때만 이 코드 실행함.
   useEffect(() => {
     console.log("I run when 'counter' changes.");
-  }, [counter]); //counter가 변화할때만 이 코드 실행함.
+  }, [counter]); //counter가 변화할때만 이 코드 실행함. //2개 같이 쓰면 or로 확인함.(둘중에 하나라도 변경되면 실행)
 
   return (
     <div>
