@@ -1,36 +1,33 @@
-import Button from "./Button";
-import styles from "./App.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function App() {
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const onClick = () => setValue((prev) => prev + 1);
-  const onChange = (event) => {
-    setKeyword(event.target.value);
-  };
-  useEffect(() => {
-    console.log("I run only once");
-  }, []); //처음 render 되었을 때 한번만 실행함.
-  useEffect(() => {
-    if (keyword !== "" && keyword.length > 5) {
-      console.log("I run when 'keyword' changes.");
+  const [toDo, setToDo] = useState("");
+  const [toDos, setToDos] = useState([]); //todo들 저장하는 array
+  const onChange = (event) => setToDo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if (toDo === "") {
+      return;
     }
-  }, [keyword]); //keyword가 변화할때만 이 코드 실행함.
-  useEffect(() => {
-    console.log("I run when 'counter' changes.");
-  }, [counter]); //counter가 변화할때만 이 코드 실행함. //2개 같이 쓰면 or로 확인함.(둘중에 하나라도 변경되면 실행)
-
+    setToDo("");
+    setToDos((currentArray) => [toDo, ...currentArray]); // 원래 array + 새로운 todo 더한 새로운 array 반환
+  };
   return (
     <div>
-      <input
-        value={keyword}
-        onChange={onChange}
-        type="text"
-        placeholder="Searfch here..."
-      />
-      <h1 className={styles.title}>{counter}!</h1>
-      <Button text={"Continue"} clickEvent={onClick} />
+      <h1>My To Dos ({toDos.length}) </h1>
+      <form onSubmit={onSubmit}>
+        <input
+          value={toDo}
+          onChange={onChange}
+          type="text"
+          placeholder="Write your to do..."
+        />
+        <button>Add To Do</button>
+      </form>
+      <hr />
+      {toDos.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
     </div>
   );
 }
