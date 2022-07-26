@@ -1,33 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]); //todo들 저장하는 array
-  const onChange = (event) => setToDo(event.target.value);
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if (toDo === "") {
+  const [loading, setLoading] = useState(true);
+  const [coins, setCoins] = useState([]);
+  const [myDollars, setMyDollars] = useState(0);
+  const [myCoin, setMyCoin] = useState(0);
+  const [selectedIdx, setSelectedIdx] = useState(0);
+
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
+
+  /* 코인 개수 계산은 내가 짠 코드 */
+  const onChangeInput = (event) => {
+    setMyDollars(event.target.value);
+    calDollar();
+  };
+  const onChangeSelect = (event) => {
+    setSelectedIdx(event.target.selectedIndex);
+    calDollar();
+  };
+  const calDollar = () => {
+    if (myDollars < 0) {
+      setMyDollars(0);
+      setMyCoin(0);
       return;
     }
-    setToDo("");
-    setToDos((currentArray) => [toDo, ...currentArray]); // 원래 array + 새로운 todo 더한 새로운 array 반환
+    setMyDollars(document.querySelector("input").value);
+    setMyCoin(Number(myDollars) / Number(coins[selectedIdx].quotes.USD.price));
   };
   return (
     <div>
-      <h1>My To Dos ({toDos.length}) </h1>
-      <form onSubmit={onSubmit}>
-        <input
-          value={toDo}
-          onChange={onChange}
-          type="text"
-          placeholder="Write your to do..."
-        />
-        <button>Add To Do</button>
-      </form>
-      <hr />
-      {toDos.map((item, index) => (
-        <li key={index}>{item}</li>
-      ))}
+      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
+      {loading ? (
+        <strong>Loading...</strong>
+      ) : (
+        <div>
+          <select onChange={onChangeSelect}>
+            {coins.map((coin, idx) => (
+              <option key={idx}>
+                {coin.name} ({coin.symbol}):{coin.quotes.USD.price}
+              </option>
+            ))}
+          </select>
+          <div>
+            <input
+              onChange={onChangeInput}
+              value={myDollars}
+              type="number"
+              placeholder="Enter your money($)"
+            />
+
+            <h3>
+              나 {coins[selectedIdx].name} {myCoin}개 살 수 있다!
+            </h3>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
