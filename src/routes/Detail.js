@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import styles from "./Detail.module.css";
 
 function Detail() {
   const { id } = useParams(); //id 받아오는 함수(url에 있는 파라미터)
@@ -17,21 +18,23 @@ function Detail() {
     getMovie();
   }, []);
   return (
-    <div>
+    <div className={styles.container}>
       {loading ? (
-        <h1>Loading...</h1>
+        <div className={styles.loader}>
+          <span>Loading...</span>
+        </div>
       ) : (
         <div>
-          <img src={movie.medium_cover_image} alt={movie.title} />
-          <h2>{movie.title_long}</h2>
-          <p>평점 : {movie.rating}</p>
-          <p>상영시간 : {movie.runtime}</p>
-          <p>{movie.description_full}</p>
-          <ul>
+          <img className={styles.movie__img} src={movie.medium_cover_image} alt={movie.title} />
+          <h2 className={styles.movie__title}>{movie.title_long}</h2>
+          <span className={styles.movie__rating}>평점 : {movie.rating}</span>
+          <span className={styles.movie__runtime}>상영시간 : {movie.runtime}</span>
+          <ul className={styles.movie__genres}>
             {movie.genres.map((g) => (
               <li key={g}>{g}</li>
             ))}
           </ul>
+          <p>{movie.description_full}</p>
         </div>
       )}
     </div>

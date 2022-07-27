@@ -10,7 +10,7 @@ function App() {
       <Routes> 
         <Route path="/movie/:id" element={<Detail />}> 
         </Route>
-        <Route path="/" element={<Home />}>
+        <Route path="/react-movie-nomad-" element={<Home />}>
         </Route>
       </Routes>
     </Router>
